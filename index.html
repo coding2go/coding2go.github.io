@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Pass</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg==" crossorigin="anonymous" />
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            font-family: consolas;
+            user-select: none;
+        }
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #18191f;
+        }
+        .inputBox{
+            position: relative;
+            width: 450px;
+        }
+        .inputBox h2{
+            font-size: 28px;
+            color: rgb(160, 160, 160);
+        }
+        .inputBox input{
+            position: relative;
+            width: 100%;
+            height: 60px;
+            border: none;
+            margin: 15px 0 20px;
+            background-color: transparent;
+            outline: none;
+            padding: 0 20px;
+            font-size: 24px;
+            letter-spacing: 4px;
+            box-sizing: border-box;
+            border-radius: 8px;
+            color: #333;
+            box-shadow: -4px -4px 10px rgba(0,0,0,1),
+                        inset 4px 4px 10px rgba(255,255,255,0.05),
+                        inset -4px -4px 10px rgba(0,0,0,1),
+                        4px 4px 10px rgba(255,255,255,0.05);
+        }
+        .inputBox input::placeholder{
+            letter-spacing: 0px;
+        }
+        .inputBox #btn{
+            position: relative;
+            cursor: pointer;
+            color: #FFF;
+            background-color: rgb(88, 88, 88);
+            font-size: 24px;
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+        .inputBox #btn:active{
+            background-color: #9c27b0;
+        }
+       
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }     
+
+        .copy{
+            position: absolute;
+            top: 124px;
+            right: 15px;
+            font-size: 24px;
+            color: rgb(199, 199, 199);
+            cursor: pointer;
+        }  
+
+        ul{
+            position: relative;
+            display: flex;
+        }
+        ul li{
+            list-style: none;
+        }
+        ul li label{
+            position: relative;
+        }
+        ul li label input[type="checkbox"]{
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+        ul li label .icon{
+            position: relative;
+            width: 40px;
+            height: 40px;
+            background-color: #18191f;
+            color: #555;
+            font-size: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: -1px -1px 4px rgba(255,255,255,0.5), 
+                        4px 4px 6px rgba(0,0,0,0.2),
+                        inset -1px -1px 4px rgba(255,255,255,0.5), 
+                        inset 1px 1px 1px rgba(0,0,0,0.1);
+        }
+
+        ul li:not(:first-child) label .icon{
+            margin-left: 20px;
+        }
+
+        ul li label .icon::before{
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: calc(100% - 5px);
+            height: calc(50% - 5px);
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            background-color: rgba(255,255,255,0.05);
+        }
+        ul li label input[type="checkbox"]:checked ~ .icon{
+            box-shadow: inset 0px 0px 2px rgba(255,255,255,0.5), 
+                        inset 4px 4px 6px rgba(0,0,0,0.2);
+        }
+        ul li label input[type="checkbox"]:checked ~ .icon .fa{
+            color: #00f3ff;
+            text-shadow: 0 0 15px #00f3ff,
+                         0 0 25px #00f3ff;
+            animation: animate 3s linear infinite;
+        }
+        @keyframes animate{
+            0%{
+                filter: hue-rotate(0deg);
+            }
+            100%{
+                filter: hue-rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="inputBox">
+        <h2>Random Password Generator</h2>
+        <br>
+        <ul>
+            <li>
+                <label class="tooltip">
+                    <span class="tooltiptext">Very secure</span>
+                    <input type="checkbox" name="" id="verySec">
+                    <div class="icon">
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                    </div>
+                </label>
+            </li>
+            <li>
+                <label class="tooltip">
+                    <span class="tooltiptext">With words</span>
+                    <input type="checkbox" name="" id="withWords">
+                    <div class="icon"> 
+                        <i class="fa fa-book" aria-hidden="true"></i>
+                    </div>
+                </label>
+            </li>
+            <li>
+                <label class="tooltip">
+                    <span class="tooltiptext">Insane</span>
+                    <input type="checkbox" name="" id="insane">
+                    <div class="icon">
+                        <i class="fa fa-rocket" aria-hidden="true"></i>
+                    </div>
+                </label>
+            </li>
+        </ul>
+        <input type="text" name="" placeholder="Create Password" id="password" readonly=""/>
+        <i id="copyIcon" class="fa fa-clone copy tooltip" aria-hidden="true" onclick="copyPass()">
+            <span class="tooltiptext">Click to copy</span>
+        </i>
+        <div id="btn" onclick="getPassword()">Generate Password</div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha256-4+XzXVhsDmqanXGHaHvgh1gMQKX40OUvDEBTu8JcmNs=" crossorigin="anonymous"></script>
+    <script>
+        function getPassword(){
+            let verySec = $('#verySec').prop("checked");
+            let withWords = $('#withWords').prop("checked");
+            let insane = $('#insane').prop("checked");
+            console.log(verySec, withWords, insane);
+            let pass = '';         
+            document.getElementById('password').value = '';
+            if(!withWords){
+                let basic = "0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP!?@#$";
+                let ultra = "0123456789zxcvbnmasdfghjklqwertyuiopZXCVBNMASDFGHJKLQWERTYUIOP!$%&()=?^@_-#.,/*;:|~"
+                let len = insane && verySec ? 64 : insane ? 32 : verySec ? 16 : 8;  
+                
+                let chars = insane ? ultra : basic;
+                for(let i = 0; i < len; i++){
+                    let r =Math.floor(Math.random() * chars.length);
+                    pass += chars.substring(r, r+1);
+                }          
+            }
+            else{
+                let len = insane && verySec ? 12 : insane ? 8 : verySec ? 6 : 3;  
+                let minWordLen = insane && verySec ? 8 : insane ? 6 : verySec ? 4 : 3;  
+                for(let i = 0; i < len; i++){
+                    let r =Math.floor(Math.random() * words.length);
+                    if(words[r].length >= minWordLen){
+                        let rMutate = Math.floor(Math.random() * 100);
+                        let tgt = words[r];
+                        if(verySec && insane && rMutate > 20){
+                            tgt = mutateWord(tgt);
+                        }
+                        if(insane && rMutate > 50){
+                            tgt = mutateWord(tgt);
+                        }
+                        if(verySec && rMutate > 70){
+                            tgt = mutateWord(tgt);
+                        }
+                        else if(rMutate > 80){
+                            tgt = mutateWord(tgt);
+                        }
+
+                        pass += tgt + (coin() ? "_" : "-");
+                    }
+                    else{
+                        i--;
+                    }               
+                } 
+                pass = pass.substring(0, pass.length - 1); 
+            }
+
+            document.getElementById('password').value = pass;
+        }
+
+        function mutateWord(target){
+            target = target.replace(/e/ig, 3).replace(/a/ig, (coin() ? '@' : '4')).replace(/i/ig, (coin() ? '1' : '!')).replace(/z/ig,'#').replace(/l/ig, (coin() ? '!' : '|'));
+            return target;
+        }
+
+        function coin(){
+            return Math.random() < 0.5;
+        }
+
+        function copyPass(){
+            let b = document.getElementById('copyIcon');
+            b.classList.remove("fa-clone");
+            b.classList.add("fa-thumbs-o-up");
+            let d = document.getElementById('password');
+            d.select();
+            d.setSelectionRange(0,9999);
+            document.execCommand('copy');
+            d.focus();
+            setTimeout(_ => {
+                b.classList.remove("fa-thumbs-o-up");
+                b.classList.add("fa-clone");    
+            }, 1500);
+        }
+
+        const words = ['a',
+'ability',
+'able',
+'about',
+'above',
+'accept',
+'according',
+'account',
+'across',
+'act',
+'action',
+'activity',
+'actually',
+'add',
+'address',
+'administration',
+'admit',
+'adult',
+'affect',
+'after',
+'again',
+'against',
+'age',
+'agency',
+'agent',
+'ago',
+'agree',
+'agreement',
+'ahead',
+'air',
+'all',
+'allow',
+'almost',
+'alone',
+'along',
+'already',
+'also',
+'although',
+'always',
+'American',
+'among',
+'amount',
+'analysis',
+'and',
+'animal',
+'another',
+'answer',
+'any',
+'anyone',
+'anything',
+'appear',
+'apply',
+'approach',
+'area',
+'argue',
+'arm',
+'around',
+'arrive',
+'art',
+'article',
+'artist',
+'as',
+'ask',
+'assume',
+'at',
+'attack',
+'attention',
+'attorney',
+'audience',
+'author',
+'authority',
+'available',
+'avoid',
+'away',
+'baby',
+'back',
+'bad',
+'bag',
+'ball',
+'bank',
+'bar',
+'base',
+'be',
+'beat',
+'beautiful',
+'because',
+'become',
+'bed',
+'before',
+'begin',
+'behavior',
+'behind',
+'believe',
+'benefit',
+'best',
+'better',
+'between',
+'beyond',
+'big',
+'bill',
+'billion',
+'bit',
+'black',
+'blood',
+'blue',
+'board',
+'body',
+'book',
+'born',
+'both',
+'box',
+'boy',
+'break',
+'bring',
+'brother',
+'budget',
+'build',
+'building',
+'business',
+'but',
+'buy',
+'by',
+'call',
+'camera',
+'campaign',
+'can',
+'cancer',
+'candidate',
+'capital',
+'car',
+'card',
+'care',
+'career',
+'carry',
+'case',
+'catch',
+'cause',
+'cell',
+'center',
+'central',
+'century',
+'certain',
+'certainly',
+'chair',
+'challenge',
+'chance',
+'change',
+'character',
+'charge',
+'check',
+'child',
+'choice',
+'choose',
+'church',
+'citizen',
+'city',
+'civil',
+'claim',
+'class',
+'clear',
+'clearly',
+'close',
+'coach',
+'cold',
+'collection',
+'college',
+'color',
+'come',
+'commercial',
+'common',
+'community',
+'company',
+'compare',
+'computer',
+'concern',
+'condition',
+'conference',
+'Congress',
+'consider',
+'consumer',
+'contain',
+'continue',
+'control',
+'cost',
+'could',
+'country',
+'couple',
+'course',
+'court',
+'cover',
+'create',
+'crime',
+'cultural',
+'culture',
+'cup',
+'current',
+'customer',
+'cut',
+'dark',
+'data',
+'daughter',
+'day',
+'dead',
+'deal',
+'death',
+'debate',
+'decade',
+'decide',
+'decision',
+'deep',
+'defense',
+'degree',
+'Democrat',
+'democratic',
+'describe',
+'design',
+'despite',
+'detail',
+'determine',
+'develop',
+'development',
+'die',
+'difference',
+'different',
+'difficult',
+'dinner',
+'direction',
+'director',
+'discover',
+'discuss',
+'discussion',
+'disease',
+'do',
+'doctor',
+'dog',
+'door',
+'down',
+'draw',
+'dream',
+'drive',
+'drop',
+'drug',
+'during',
+'each',
+'early',
+'east',
+'easy',
+'eat',
+'economic',
+'economy',
+'edge',
+'education',
+'effect',
+'effort',
+'eight',
+'either',
+'election',
+'else',
+'employee',
+'end',
+'energy',
+'enjoy',
+'enough',
+'enter',
+'entire',
+'environment',
+'environmental',
+'especially',
+'establish',
+'even',
+'evening',
+'event',
+'ever',
+'every',
+'everybody',
+'everyone',
+'everything',
+'evidence',
+'exactly',
+'example',
+'executive',
+'exist',
+'expect',
+'experience',
+'expert',
+'explain',
+'eye',
+'face',
+'fact',
+'factor',
+'fail',
+'fall',
+'family',
+'far',
+'fast',
+'father',
+'fear',
+'federal',
+'feel',
+'feeling',
+'few',
+'field',
+'fight',
+'figure',
+'fill',
+'film',
+'final',
+'finally',
+'financial',
+'find',
+'fine',
+'finger',
+'finish',
+'fire',
+'firm',
+'first',
+'fish',
+'five',
+'floor',
+'fly',
+'focus',
+'follow',
+'food',
+'foot',
+'for',
+'force',
+'foreign',
+'forget',
+'form',
+'former',
+'forward',
+'four',
+'free',
+'friend',
+'from',
+'front',
+'full',
+'fund',
+'future',
+'game',
+'garden',
+'gas',
+'general',
+'generation',
+'get',
+'girl',
+'give',
+'glass',
+'go',
+'goal',
+'good',
+'government',
+'great',
+'green',
+'ground',
+'group',
+'grow',
+'growth',
+'guess',
+'gun',
+'guy',
+'hair',
+'half',
+'hand',
+'hang',
+'happen',
+'happy',
+'hard',
+'have',
+'he',
+'head',
+'health',
+'hear',
+'heart',
+'heat',
+'heavy',
+'help',
+'her',
+'here',
+'herself',
+'high',
+'him',
+'himself',
+'his',
+'history',
+'hit',
+'hold',
+'home',
+'hope',
+'hospital',
+'hot',
+'hotel',
+'hour',
+'house',
+'how',
+'however',
+'huge',
+'human',
+'hundred',
+'husband',
+'I',
+'idea',
+'identify',
+'if',
+'image',
+'imagine',
+'impact',
+'important',
+'improve',
+'in',
+'include',
+'including',
+'increase',
+'indeed',
+'indicate',
+'individual',
+'industry',
+'information',
+'inside',
+'instead',
+'institution',
+'interest',
+'interesting',
+'international',
+'interview',
+'into',
+'investment',
+'involve',
+'issue',
+'it',
+'item',
+'its',
+'itself',
+'job',
+'join',
+'just',
+'keep',
+'key',
+'kid',
+'kill',
+'kind',
+'kitchen',
+'know',
+'knowledge',
+'land',
+'language',
+'large',
+'last',
+'late',
+'later',
+'laugh',
+'law',
+'lawyer',
+'lay',
+'lead',
+'leader',
+'learn',
+'least',
+'leave',
+'left',
+'leg',
+'legal',
+'less',
+'let',
+'letter',
+'level',
+'lie',
+'life',
+'light',
+'like',
+'likely',
+'line',
+'list',
+'listen',
+'little',
+'live',
+'local',
+'long',
+'look',
+'lose',
+'loss',
+'lot',
+'love',
+'low',
+'machine',
+'magazine',
+'main',
+'maintain',
+'major',
+'majority',
+'make',
+'man',
+'manage',
+'management',
+'manager',
+'many',
+'market',
+'marriage',
+'material',
+'matter',
+'may',
+'maybe',
+'me',
+'mean',
+'measure',
+'media',
+'medical',
+'meet',
+'meeting',
+'member',
+'memory',
+'mention',
+'message',
+'method',
+'middle',
+'might',
+'military',
+'million',
+'mind',
+'minute',
+'miss',
+'mission',
+'model',
+'modern',
+'moment',
+'money',
+'month',
+'more',
+'morning',
+'most',
+'mother',
+'mouth',
+'move',
+'movement',
+'movie',
+'Mr',
+'Mrs',
+'much',
+'music',
+'must',
+'my',
+'myself',
+'name',
+'nation',
+'national',
+'natural',
+'nature',
+'near',
+'nearly',
+'necessary',
+'need',
+'network',
+'never',
+'new',
+'news',
+'newspaper',
+'next',
+'nice',
+'night',
+'no',
+'none',
+'nor',
+'north',
+'not',
+'note',
+'nothing',
+'notice',
+'now',
+'number',
+'occur',
+'of',
+'off',
+'offer',
+'office',
+'officer',
+'official',
+'often',
+'oh',
+'oil',
+'ok',
+'old',
+'on',
+'once',
+'one',
+'only',
+'onto',
+'open',
+'operation',
+'opportunity',
+'option',
+'or',
+'order',
+'organization',
+'other',
+'others',
+'our',
+'out',
+'outside',
+'over',
+'own',
+'owner',
+'page',
+'pain',
+'painting',
+'paper',
+'parent',
+'part',
+'participant',
+'particular',
+'particularly',
+'partner',
+'party',
+'pass',
+'past',
+'patient',
+'pattern',
+'pay',
+'peace',
+'people',
+'per',
+'perform',
+'performance',
+'perhaps',
+'period',
+'person',
+'personal',
+'phone',
+'physical',
+'pick',
+'picture',
+'piece',
+'place',
+'plan',
+'plant',
+'play',
+'player',
+'PM',
+'point',
+'police',
+'policy',
+'political',
+'politics',
+'poor',
+'popular',
+'population',
+'position',
+'positive',
+'possible',
+'power',
+'practice',
+'prepare',
+'present',
+'president',
+'pressure',
+'pretty',
+'prevent',
+'price',
+'private',
+'probably',
+'problem',
+'process',
+'produce',
+'product',
+'production',
+'professional',
+'professor',
+'program',
+'project',
+'property',
+'protect',
+'prove',
+'provide',
+'public',
+'pull',
+'purpose',
+'push',
+'put',
+'quality',
+'question',
+'quickly',
+'quite',
+'race',
+'radio',
+'raise',
+'range',
+'rate',
+'rather',
+'reach',
+'read',
+'ready',
+'real',
+'reality',
+'realize',
+'really',
+'reason',
+'receive',
+'recent',
+'recently',
+'recognize',
+'record',
+'red',
+'reduce',
+'reflect',
+'region',
+'relate',
+'relationship',
+'religious',
+'remain',
+'remember',
+'remove',
+'report',
+'represent',
+'Republican',
+'require',
+'research',
+'resource',
+'respond',
+'response',
+'responsibility',
+'rest',
+'result',
+'return',
+'reveal',
+'rich',
+'right',
+'rise',
+'risk',
+'road',
+'rock',
+'role',
+'room',
+'rule',
+'run',
+'safe',
+'same',
+'save',
+'say',
+'scene',
+'school',
+'science',
+'scientist',
+'score',
+'sea',
+'season',
+'seat',
+'second',
+'section',
+'security',
+'see',
+'seek',
+'seem',
+'sell',
+'send',
+'senior',
+'sense',
+'series',
+'serious',
+'serve',
+'service',
+'set',
+'seven',
+'several',
+'sex',
+'sexual',
+'shake',
+'share',
+'she',
+'shoot',
+'short',
+'shot',
+'should',
+'shoulder',
+'show',
+'side',
+'sign',
+'significant',
+'similar',
+'simple',
+'simply',
+'since',
+'sing',
+'single',
+'sister',
+'sit',
+'site',
+'situation',
+'six',
+'size',
+'skill',
+'skin',
+'small',
+'smile',
+'so',
+'social',
+'society',
+'soldier',
+'some',
+'somebody',
+'someone',
+'something',
+'sometimes',
+'son',
+'song',
+'soon',
+'sort',
+'sound',
+'source',
+'south',
+'southern',
+'space',
+'speak',
+'special',
+'specific',
+'speech',
+'spend',
+'sport',
+'spring',
+'staff',
+'stage',
+'stand',
+'standard',
+'star',
+'start',
+'state',
+'statement',
+'station',
+'stay',
+'step',
+'still',
+'stock',
+'stop',
+'store',
+'story',
+'strategy',
+'street',
+'strong',
+'structure',
+'student',
+'study',
+'stuff',
+'style',
+'subject',
+'success',
+'successful',
+'such',
+'suddenly',
+'suffer',
+'suggest',
+'summer',
+'support',
+'sure',
+'surface',
+'system',
+'table',
+'take',
+'talk',
+'task',
+'tax',
+'teach',
+'teacher',
+'team',
+'technology',
+'television',
+'tell',
+'ten',
+'tend',
+'term',
+'test',
+'than',
+'thank',
+'that',
+'the',
+'their',
+'them',
+'themselves',
+'then',
+'theory',
+'there',
+'these',
+'they',
+'thing',
+'think',
+'third',
+'this',
+'those',
+'though',
+'thought',
+'thousand',
+'threat',
+'three',
+'through',
+'throughout',
+'throw',
+'thus',
+'time',
+'to',
+'today',
+'together',
+'tonight',
+'too',
+'top',
+'total',
+'tough',
+'toward',
+'town',
+'trade',
+'traditional',
+'training',
+'travel',
+'treat',
+'treatment',
+'tree',
+'trial',
+'trip',
+'trouble',
+'true',
+'truth',
+'try',
+'turn',
+'TV',
+'two',
+'type',
+'under',
+'understand',
+'unit',
+'until',
+'up',
+'upon',
+'us',
+'use',
+'usually',
+'value',
+'various',
+'very',
+'victim',
+'view',
+'violence',
+'visit',
+'voice',
+'vote',
+'wait',
+'walk',
+'wall',
+'want',
+'war',
+'watch',
+'water',
+'way',
+'we',
+'weapon',
+'wear',
+'week',
+'weight',
+'well',
+'west',
+'western',
+'what',
+'whatever',
+'when',
+'where',
+'whether',
+'which',
+'while',
+'white',
+'who',
+'whole',
+'whom',
+'whose',
+'why',
+'wide',
+'wife',
+'will',
+'win',
+'wind',
+'window',
+'wish',
+'with',
+'within',
+'without',
+'woman',
+'wonder',
+'word',
+'work',
+'worker',
+'world',
+'worry',
+'would',
+'write',
+'writer',
+'wrong',
+'yard',
+'yeah',
+'year',
+'yes',
+'yet',
+'you',
+'young',
+'your',
+'yourself']
+
+    </script>
+</body>
+</html>
