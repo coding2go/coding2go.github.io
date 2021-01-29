@@ -1,0 +1,33 @@
+{
+    "short_name": "Random Password Generator",
+    "name": "Random Password Generator",
+    "icons": [
+      {
+        "src": "./lock.png",
+        "type": "image/png",
+        "sizes": "32x32"
+      }
+    ],
+    "start_url": "/index.html",
+    "background_color": "#18191f",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#18191f",
+    "shortcuts": [
+      {
+        "name": "Random Password Generator",
+        "short_name": "RPG",
+        "description": "Random Password Generator",
+        "url": "/index.html",
+        "icons": [{ "src": ".lock.png", "sizes": "32x32" }]
+      }
+    ],
+    "description": "Random Password Generator",
+    "screenshots": [
+      {
+        "src": "./lock_big.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ]
+  }
